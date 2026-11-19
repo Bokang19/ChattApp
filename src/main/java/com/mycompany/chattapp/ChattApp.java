@@ -7,7 +7,6 @@ public class ChattApp {
     public static void main(String[] args) {
         Scanner sc = new Scanner(System.in);
 
-        // ========== PART 1: LOGIN ==========
         System.out.println("===== QUICKCHAT LOGIN =====");
         System.out.print("Enter username: ");
         String username = sc.nextLine();
@@ -24,12 +23,13 @@ public class ChattApp {
             System.out.println("Login successful!");
             System.out.println("Welcome to QuickChat.");
 
-            // ========== PART 2: MENU ==========
+            // ========== MAIN MENU ==========
             while (true) {
                 System.out.println("\nPlease choose an option:");
                 System.out.println("1) Send Messages");
                 System.out.println("2) Show recently sent messages");
                 System.out.println("3) Quit");
+                System.out.println("4) Stored Messages");
                 System.out.print("Enter your choice: ");
 
                 int choice = sc.nextInt();
@@ -52,10 +52,10 @@ public class ChattApp {
 
                         if (messageText.length() > 250) {
                             System.out.println("Please enter a message of less than 250 characters.");
-                            i--; // try again
+                            i--;
                             continue;
                         } else {
-                            System.out.println("Message sent");
+                            System.out.println("Message ready.");
                         }
 
                         Message msg = new Message(recipient, messageText);
@@ -70,23 +70,64 @@ public class ChattApp {
 
                         if (action == 1) {
                             System.out.println("Message successfully sent.");
-                            msg.increaseTotal();
+                            msg.storeMessage("Sent");
                             System.out.println(msg.printMessages());
                         } else if (action == 2) {
-                            System.out.println("Press 0 to delete the message.");
+                            System.out.println("Message disregarded.");
+                            msg.storeMessage("Disregard");
                         } else if (action == 3) {
-                            msg.storeMessage();
+                            msg.storeMessage("Stored");
                             System.out.println("Message successfully stored.");
                         }
                     }
 
-                    System.out.println("\nTotal messages sent: " + Message.returnTotalMessages());
-
                 } else if (choice == 2) {
                     System.out.println("Coming Soon.");
+
                 } else if (choice == 3) {
                     System.out.println("Goodbye!");
                     break;
+
+                } else if (choice == 4) {
+                    // ========== PART 3: STORED MESSAGES MENU ==========
+                    while (true) {
+                        System.out.println("\n===== STORED MESSAGES MENU =====");
+                        System.out.println("a) Display sender and recipient of all stored messages");
+                        System.out.println("b) Display the longest stored message");
+                        System.out.println("c) Search for a message ID");
+                        System.out.println("d) Search messages by recipient");
+                        System.out.println("e) Delete a message using message hash");
+                        System.out.println("f) Display full report of all stored messages");
+                        System.out.println("g) Back to main menu");
+                        System.out.print("Enter your choice (a-g): ");
+
+                        String subChoice = sc.nextLine().toLowerCase();
+
+                        if (subChoice.equals("a")) {
+                            Message.displaySenderAndRecipient();
+                        } else if (subChoice.equals("b")) {
+                            Message.displayLongestMessage();
+                        } else if (subChoice.equals("c")) {
+                            System.out.print("Enter Message ID to search: ");
+                            String id = sc.nextLine();
+                            Message.searchByMessageID(id);
+                        } else if (subChoice.equals("d")) {
+                            System.out.print("Enter recipient number: ");
+                            String recipient = sc.nextLine();
+                            Message.searchByRecipient(recipient);
+                        } else if (subChoice.equals("e")) {
+                            System.out.print("Enter Message Hash to delete: ");
+                            String hash = sc.nextLine();
+                            Message.deleteByHash(hash);
+                        } else if (subChoice.equals("f")) {
+                            Message.displayFullReport();
+                        } else if (subChoice.equals("g")) {
+                            break;
+                        } else {
+                            System.out.println("Invalid option.");
+                        }
+                    }
+
                 } else {
                     System.out.println("Invalid option. Please try again.");
                 }
